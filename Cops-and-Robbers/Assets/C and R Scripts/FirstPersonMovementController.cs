@@ -10,8 +10,7 @@ public class FirstPersonMovementController : MonoBehaviour {
     private Vector3 movementTarget;
     private Rigidbody rb;
 
-    public float standingMoveSpeed = 6.0f;
-    public float sprintMoveSpeed = 10.0f;
+    public float standingMoveSpeed = 4.5f;
     public float crouchMoveSpeed = 3.0f;
     public float sprintForwardsMult = 2.0f;
     public float sprintSidewaysMult = 0.5f;
@@ -20,7 +19,7 @@ public class FirstPersonMovementController : MonoBehaviour {
     public KeyCode crouchKeyCode = KeyCode.LeftControl;
     public KeyCode jumpKeyCode = KeyCode.Space;
 
-    // Initialize controller.
+    // Start is called before the first frame update.
     void Start() {
 
         Cursor.lockState = CursorLockMode.Locked;
@@ -29,7 +28,7 @@ public class FirstPersonMovementController : MonoBehaviour {
     }
 
     // Update is called once per frame.
-    void FixedUpdate() {
+    void Update() {
 
         forwardInput = Input.GetAxis("Vertical");
         sideInput = Input.GetAxis("Horizontal");
@@ -42,13 +41,14 @@ public class FirstPersonMovementController : MonoBehaviour {
 
         } else if (Input.GetKey(sprintKeyCode)) { // The sprint key is being pressed.
 
-            MoveToTarget(forwardInput * sprintForwardsMult, sideInput * sprintSidewaysMult, sprintMoveSpeed); // Move the player character while sprinting.
+            MoveToTarget(forwardInput * sprintForwardsMult, sideInput * sprintSidewaysMult, standingMoveSpeed); // Move the player character while sprinting.
 
         } else { // No state key is being pressed, so the player must be standing.
 
             MoveToTarget(forwardInput, sideInput, standingMoveSpeed); // Move the player character while standing.
 
         }
+
     }
 
     /*
@@ -57,19 +57,12 @@ public class FirstPersonMovementController : MonoBehaviour {
      * @param fi a float value representing forwards motion.
      * @param si a float value representing sideways motion.
      * @author Christopher Oehler.
-     */ 
+     */
     void MoveToTarget(float fi, float si, float speed) {
         
-        movementTarget = (transform.forward * fi) + (transform.right * si); // Calculate a movement target vector for given forwards and sideways inputs.
-        
-        rb.MovePosition(rb.position + movementTarget.normalized * speed * Time.deltaTime); // Apply a normalized and time adjusted target vector to.
+        movementTarget = (transform.forward * fi * speed) + (transform.right * si * speed); // Calculate a movement target vector for given forwards and sideways inputs.
 
-        /*
-         * 
-         * AddForce
-         * Velocity
-         * 
-         */
+        transform.position += movementTarget * Time.deltaTime;
 
     }
 

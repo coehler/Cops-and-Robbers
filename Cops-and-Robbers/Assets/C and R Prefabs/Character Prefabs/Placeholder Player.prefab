@@ -106,7 +106,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96e61d3b7b35fd747a84339b8de87893, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
+  standingMoveSpeed: 6
+  crouchMoveSpeed: 3
+  sprintForwardsMult: 2
+  sprintSidewaysMult: 0.5
+  sprintKeyCode: 304
+  crouchKeyCode: 306
+  jumpKeyCode: 32
 --- !u!1 &5920729638910279239
 GameObject:
   m_ObjectHideFlags: 0
@@ -137,7 +143,7 @@ Transform:
   m_LocalPosition: {x: 0.059800006, y: 0.4154, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 9192697089710869696}
+  - {fileID: 117290572860559777}
   m_Father: {fileID: 5920729638690049610}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -205,13 +211,49 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sensitivity: 5
   smoothing: 2
+--- !u!1 &9068460288673519164
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 117290572860559777}
+  m_Layer: 0
+  m_Name: Gun Model
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &117290572860559777
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9068460288673519164}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 9192697089710869696}
+  m_Father: {fileID: 5920729638910279240}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &5920729638042799251
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 5920729638910279240}
+    m_TransformParent: {fileID: 117290572860559777}
     m_Modifications:
+    - target: {fileID: 3294855302323998075, guid: f1af6a90c4e1ffa4bb7da208a1392a9d,
+        type: 3}
+      propertyPath: m_Name
+      value: SM_Wep_RifleSwat_01_Rail
+      objectReference: {fileID: 0}
     - target: {fileID: 3294855302323683411, guid: f1af6a90c4e1ffa4bb7da208a1392a9d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -220,7 +262,7 @@ PrefabInstance:
     - target: {fileID: 3294855302323683411, guid: f1af6a90c4e1ffa4bb7da208a1392a9d,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.3
+      value: -0.30000004
       objectReference: {fileID: 0}
     - target: {fileID: 3294855302323683411, guid: f1af6a90c4e1ffa4bb7da208a1392a9d,
         type: 3}
@@ -266,11 +308,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3294855302323998075, guid: f1af6a90c4e1ffa4bb7da208a1392a9d,
-        type: 3}
-      propertyPath: m_Name
-      value: SM_Wep_RifleSwat_01_Rail
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f1af6a90c4e1ffa4bb7da208a1392a9d, type: 3}
