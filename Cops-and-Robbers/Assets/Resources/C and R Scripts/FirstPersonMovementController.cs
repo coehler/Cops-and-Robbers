@@ -6,7 +6,6 @@ public class FirstPersonMovementController : MonoBehaviour {
 
     private float forwardInput;
     private float sideInput;
-
     private Vector3 movementTarget;
     private Rigidbody rb;
 
@@ -14,7 +13,6 @@ public class FirstPersonMovementController : MonoBehaviour {
     public float crouchMoveSpeed = 3.0f;
     public float sprintForwardsMult = 2.0f;
     public float sprintSidewaysMult = 0.5f;
-
     public KeyCode sprintKeyCode = KeyCode.LeftShift;
     public KeyCode crouchKeyCode = KeyCode.LeftControl;
     public KeyCode jumpKeyCode = KeyCode.Space;
@@ -62,8 +60,9 @@ public class FirstPersonMovementController : MonoBehaviour {
         
         movementTarget = (transform.forward * fi * speed) + (transform.right * si * speed); // Calculate a movement target vector for given forwards and sideways inputs.
 
-        transform.position += movementTarget * Time.deltaTime;
+        //transform.position += movementTarget * Time.deltaTime;
 
+        rb.MovePosition(rb.transform.position + movementTarget * Time.deltaTime);
     }
 
 }

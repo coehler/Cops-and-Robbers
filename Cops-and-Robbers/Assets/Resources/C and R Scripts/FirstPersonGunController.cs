@@ -13,7 +13,6 @@ public class FirstPersonGunController : MonoBehaviour {
     public float holdHeight = 0.0f;
     public float holdSide = 0.0f;
     public float fireSpeed = 15.0f;
-
     public ParticleSystem smokeSystem;
     public ParticleSystem flashSystem;
     public ParticleSystem shellSystem;
@@ -29,15 +28,16 @@ public class FirstPersonGunController : MonoBehaviour {
     private float gunbobAmountY = 0.01f;
     private float currentGunbobX = 0.0f;
     private float currentGunbobY = 0.0f;
-
     private float racioHipHold = 1.0f;
     private float racioHipHoldV;
     private readonly float shootAngleRandomizationNotAiming = 5.0f;
     private readonly float shootAngleRandomizationAiming = 15.0f;
+    private RaycastBulletController bulletController;
 
     // Start is called before the first frame update.
     void Start() {
         mouseController = GetComponentInParent(typeof(FirstPersonMouseLookController)) as FirstPersonMouseLookController; // Get the mouse controller script.
+        bulletController = transform.parent.GetComponentInChildren<RaycastBulletController>();
     }
 
     // Update is called once per frame.
@@ -61,6 +61,8 @@ public class FirstPersonGunController : MonoBehaviour {
                 smokeSystem.Emit(10);
 
                 shellSystem.Emit(1); // Emit an empty shell from the ejection port.
+
+                bulletController.ShootRaycastBullet(10.0f); // Shoot a raycast bullet;
 
                 waitUntilNextFire = 1.0f;
 

@@ -11,7 +11,12 @@ public class FirstPersonMouseLookController : MonoBehaviour
     private float headbobSpeed = 1.0f;
     private float yRotationV = 0.0f;
     private float xRotationV = 0.0f;
+    private float headFlinchZ = 0.0f;
+    private float currentFlinchZPos = 0.0f;
+    private float currentFlinchZPosV = 0.0f;
 
+    public float flinchAmount = 0.5f;
+    public float flinchRecoverTime = 0.2f;
     public float sensitivity = 5.0f;
     public float smoothing = 2.0f;
 
@@ -41,8 +46,18 @@ public class FirstPersonMouseLookController : MonoBehaviour
         mouseLook += smoothV;
         mouseLook.y = Mathf.Clamp(mouseLook.y, -90f, 90f);
 
-        transform.localRotation = Quaternion.AngleAxis(-mouseLook.y, Vector3.right);
-        character.transform.localRotation = Quaternion.AngleAxis(mouseLook.x, character.transform.up);
+        currentFlinchZPos = Mathf.SmoothDamp(currentFlinchZPos, 0, ref currentFlinchZPosV, flinchRecoverTime); // Recover from being shot.
 
+        transform.localRotation = Quaternion.AngleAxis(-mouseLook.y, Vector3.right) * Quaternion.AngleAxis(currentFlinchZPos, Vector3.forward);
+        character.transform.localRotation = Quaternion.AngleAxis(mouseLook.x, character.transform.up);
+    }
+
+    /*
+     * This function rotates the head by FlinchAmount to the right along the Z axis.
+     * 
+     * @author Christopher Oehler.
+     */
+    public void FlinchHead(float damageAmount) {
+        currentFlinchZPos += flinchAmount * damageAmount; // Flinch the camera.
     }
 }

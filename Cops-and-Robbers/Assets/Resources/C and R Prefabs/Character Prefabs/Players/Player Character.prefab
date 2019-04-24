@@ -47,7 +47,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firstPersonCamera: {fileID: 4506361205322299188}
-  mouseController: {fileID: 0}
   shootKeyCode: 323
   reloadKeyCode: 114
   recoilAmount: 0.01
@@ -58,6 +57,36 @@ MonoBehaviour:
   smokeSystem: {fileID: 7828214509914434207}
   flashSystem: {fileID: 7828214509914536923}
   shellSystem: {fileID: 8756132969993183692}
+--- !u!1 &2596451059138948780
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2665219583131607617}
+  m_Layer: 0
+  m_Name: HitscanBulletSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2665219583131607617
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2596451059138948780}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4506361205322299195}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4506361205169243957
 GameObject:
   m_ObjectHideFlags: 0
@@ -219,6 +248,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7855356065298421970}
+  - {fileID: 2665219583131607617}
   m_Father: {fileID: 4506361205169243961}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -284,6 +314,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83106cabb8715de418d48d222e2690f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  flinchAmount: 8
+  flinchRecoverTime: 0.2
   sensitivity: 5
   smoothing: 2
   headbobStepCounter: 0
