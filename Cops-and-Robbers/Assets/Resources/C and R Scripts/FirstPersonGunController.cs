@@ -17,6 +17,18 @@ public class FirstPersonGunController : MonoBehaviour {
     public ParticleSystem flashSystem;
     public ParticleSystem shellSystem;
 
+    public int ammoInMagazine = 30;
+    public int sizeOfMagazine = 30;
+    public int ammoInReserve = 60;
+    public float timeToReload = 1.0f;
+    public float currentReloadTime = 0.0f;
+
+    public enum GunState { Shooting, Idle, Reloading, MagazineEmpty};
+    //[HideInInspector]
+    public GunState state;
+    
+
+
     private float waitUntilNextFire = 0.0f;
     private float currentRecoilZPos = 0.0f;
     private float currentRecoilZPosV = 0.0f;
@@ -46,9 +58,59 @@ public class FirstPersonGunController : MonoBehaviour {
         currentGunbobX = Mathf.Sin(mouseController.headbobStepCounter) * gunbobAmountX * racioHipHold;
         currentGunbobY = Mathf.Cos(mouseController.headbobStepCounter * 2) * gunbobAmountY * -1 * racioHipHold;
 
+        if (ammoInMagazine == 0 && state != GunState.Reloading) { // If there is no ammo in the magazine, set the gun's state to MagazineEmpty as long as it is not in the process of reloading.
+
+            state = GunState.MagazineEmpty;
+
+        }
+
+        if (Input.GetKey(reloadKeyCode)) {
+
+            if (state != GunState.Reloading) { // We are entering a reload cycle.
+
+                if (ammoInReserve > 0) {
+                    currentReloadTime = timeToReload;
+                    state = GunState.Reloading;
+                }
+                
+            }
+
+        }
+
+        if (state == GunState.Reloading) { // We are in the process of reloading, so countdown to the reload's end.
+
+            currentReloadTime -= Time.deltaTime;
+
+        }
+
+        if (state == GunState.Reloading && currentReloadTime <= 0) { // We where reloading, but are now done.
+
+            int ammoToLoad = sizeOfMagazine - ammoInMagazine; // Calculate how much ammo needs to be loaded into the magazine.
+
+            if (ammoInReserve >= ammoToLoad) { // We have enough reserve ammo to fill a magazine.
+
+                // Replenish the magazine and deplete reserve ammo.
+                ammoInMagazine = sizeOfMagazine;
+                ammoInReserve -= ammoToLoad;
+
+            } else { // We don't have enough ammo to fill a magazine.
+
+                // Fill the magazine with the remaining ammo in reserve.
+                ammoInMagazine += ammoInReserve;
+                ammoInReserve = 0;
+
+            }
+
+            currentReloadTime = timeToReload;
+            state = GunState.Idle;
+
+        }
+
         if (Input.GetKey(shootKeyCode)) { // The shoot key is being pressed.
 
-            if (waitUntilNextFire <= 0.0f) { // A bullet has been chambered.
+            if (waitUntilNextFire <= 0.0f && (state != GunState.MagazineEmpty && state != GunState.Reloading)) { // A bullet has been chambered and the gun is not empty or reloading.
+
+                state = GunState.Shooting; // Change gun state to shooting.
 
                 // Point the gun in a random direction when fired.
                 targetXRotation += (Random.value - 0.5f) * Mathf.Lerp(shootAngleRandomizationAiming, shootAngleRandomizationNotAiming, racioHipHold);
@@ -62,11 +124,20 @@ public class FirstPersonGunController : MonoBehaviour {
 
                 shellSystem.Emit(1); // Emit an empty shell from the ejection port.
 
-                bulletController.ShootRaycastBullet(10.0f); // Shoot a raycast bullet;
+                bulletController.ShootRaycastBullet(10.0f); // Shoot a raycast bullet.
 
                 waitUntilNextFire = 1.0f;
 
+                ammoInMagazine--; // Remove a bullet from the magazine.
+
             }
+
+        } else {
+
+            if (state != GunState.Reloading && state != GunState.MagazineEmpty) {
+                state = GunState.Idle; // Change gun state to not shooting.
+            }
+
         }
 
         waitUntilNextFire -= Time.deltaTime * fireSpeed;

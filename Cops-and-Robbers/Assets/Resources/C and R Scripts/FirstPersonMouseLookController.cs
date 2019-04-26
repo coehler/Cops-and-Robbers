@@ -60,4 +60,5 @@ public class FirstPersonMouseLookController : MonoBehaviour
     public void FlinchHead(float damageAmount) {
         currentFlinchZPos += flinchAmount * damageAmount; // Flinch the camera.
     }
+
 }
