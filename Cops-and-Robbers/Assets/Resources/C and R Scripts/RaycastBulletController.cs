@@ -4,20 +4,32 @@ using UnityEngine;
 
 public class RaycastBulletController : MonoBehaviour{
 
-    private FirstPersonGunController gunModelController;
+    [HideInInspector]
+    public FirstPersonGunController gunController;
     private RaycastHit hit;
     private int playerLayer;
-    private float z = 10.0f;
 
     public float spreadCurrent = 0.0f;
+
     public float spreadMin = 0.3f;
     public float spreadMax = 1.3f;
     public float spreadPerShot = 0.1f;
     public float spreadRecovery = 0.5f;
-    
+
+    public float hipSpreadMin = 0.3f;
+    public float hipSpreadMax = 1.3f;
+    public float hipSpreadPerShot = 0.1f;
+    public float hipSpreadRecovery = 1.5f;
+    public float aimSpreadMin = 0.05f;
+    public float aimSpreadMax = 0.3f;
+    public float aimSpreadPerShot = 0.01f;
+    public float aimSpreadRecovery = 1.5f;
+
+    private readonly float z = 10.0f;
+
     // Start is called before the first frame update.
     void Start(){
-        gunModelController = transform.parent.GetComponentInChildren<FirstPersonGunController>();
+        gunController = transform.parent.GetComponentInChildren<FirstPersonGunController>();
         playerLayer = 1 << 10;
         playerLayer = ~playerLayer;
         spreadCurrent = spreadMin;
@@ -25,7 +37,23 @@ public class RaycastBulletController : MonoBehaviour{
 
     void Update() {
 
-        if (gunModelController.state != FirstPersonGunController.GunState.Shooting) {
+        if (gunController.aiming) {
+
+            spreadMin = aimSpreadMin;
+            spreadMax = aimSpreadMax;
+            spreadPerShot = aimSpreadPerShot;
+            spreadRecovery = aimSpreadRecovery;
+
+        } else {
+
+            spreadMin = hipSpreadMin;
+            spreadMax = hipSpreadMax;
+            spreadPerShot = hipSpreadPerShot;
+            spreadRecovery = hipSpreadRecovery;
+
+        }
+
+        if (gunController.state != FirstPersonGunController.GunState.Shooting) {
             spreadCurrent -= spreadRecovery * Time.deltaTime;
             if (spreadCurrent < spreadMin) {
                 spreadCurrent = spreadMin;
@@ -35,7 +63,6 @@ public class RaycastBulletController : MonoBehaviour{
     }
 
     public void ShootRaycastBullet(float damageAmount) {
-
 
         // Calculate the random angle of the raycast bullet.
         float randomRadius = Random.Range(0, spreadCurrent);
@@ -52,7 +79,6 @@ public class RaycastBulletController : MonoBehaviour{
             
         }
 
-        
         // Fire the raycast bullet.
         if (Physics.Raycast(transform.position, raycastBulletTarget, out hit, Mathf.Infinity, playerLayer)) {
 

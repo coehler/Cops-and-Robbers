@@ -5,13 +5,18 @@ using UnityEngine.UI;
 
 public class AmmunitionReadoutController : MonoBehaviour{
 
-    public Text currentAmmoReadout;
-    public Text reserveAmmoReadout;
-    public FirstPersonGunController firstPersonGunController;
+    public GameObject player;
+    private Text currentAmmoReadout;
+    private Text reserveAmmoReadout;
+    private FirstPersonGunController firstPersonGunController;
 
     // Start is called before the first frame update.
     void Start(){
-        
+
+        currentAmmoReadout = GameObject.Find("Current Ammo").GetComponent<Text>();
+        reserveAmmoReadout = GameObject.Find("Reserve Ammo").GetComponent<Text>();
+        firstPersonGunController = player.GetComponentInChildren<FirstPersonGunController>();
+
     }
 
     // Update is called once per frame.

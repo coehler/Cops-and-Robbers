@@ -8,17 +8,19 @@ public class FirstPersonMouseLookController : MonoBehaviour
     private Vector2 smoothV;
     private GameObject character;
     private Vector3 parentLastPos;
-    private float headbobSpeed = 1.0f;
-    private float yRotationV = 0.0f;
-    private float xRotationV = 0.0f;
-    private float headFlinchZ = 0.0f;
+    private float racioZoom;
+    private float racioZoomV;
     private float currentFlinchZPos = 0.0f;
     private float currentFlinchZPosV = 0.0f;
+    public float currentZoom;
+    private Camera playerCamera;
 
+    public float headbobSpeed = 1.0f;
     public float flinchAmount = 0.5f;
     public float flinchRecoverTime = 0.2f;
     public float sensitivity = 5.0f;
     public float smoothing = 2.0f;
+    public FirstPersonGunController gunController;
 
     [HideInInspector]
     public float headbobStepCounter = 0.0f;
@@ -30,6 +32,7 @@ public class FirstPersonMouseLookController : MonoBehaviour
 
         character = transform.parent.gameObject;
         parentLastPos = transform.parent.position;
+        playerCamera = GetComponent<Camera>();
 
     }
 
@@ -50,6 +53,19 @@ public class FirstPersonMouseLookController : MonoBehaviour
 
         transform.localRotation = Quaternion.AngleAxis(-mouseLook.y, Vector3.right) * Quaternion.AngleAxis(currentFlinchZPos, Vector3.forward);
         character.transform.localRotation = Quaternion.AngleAxis(mouseLook.x, character.transform.up);
+
+        if (gunController.aiming) {
+
+            racioZoom = Mathf.SmoothDamp(racioZoom, 0, ref racioZoomV, gunController.hipToAimSpeed);
+            
+        } else {
+
+            racioZoom = Mathf.SmoothDamp(racioZoom, 1, ref racioZoomV, gunController.hipToAimSpeed);
+
+        }
+
+        playerCamera.fieldOfView = Mathf.Lerp(gunController.aimZoom, gunController.hipZoom, racioZoom);
+
     }
 
     /*
