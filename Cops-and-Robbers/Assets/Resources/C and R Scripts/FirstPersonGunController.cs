@@ -39,6 +39,9 @@ public class FirstPersonGunController : MonoBehaviour {
     [HideInInspector]
     public bool aiming = false;
 
+    private AudioSource gunAudioSource;
+    private AudioClip shotClip;
+    private AudioClip reloadClip;
     private float waitUntilNextFire = 0.0f;
     private float currentRecoilZPos = 0.0f;
     private float currentRecoilZPosV = 0.0f;
@@ -57,8 +60,13 @@ public class FirstPersonGunController : MonoBehaviour {
 
     // Start is called before the first frame update.
     void Start() {
+
         mouseController = GetComponentInParent(typeof(FirstPersonMouseLookController)) as FirstPersonMouseLookController; // Get the mouse controller script.
         bulletController = transform.parent.GetComponentInChildren<RaycastBulletController>();
+        gunAudioSource = GetComponent<AudioSource>();
+        shotClip = Resources.Load<AudioClip>("C and R Original Assets/Audio/M4A1_shot");
+        reloadClip = Resources.Load<AudioClip>("C and R Original Assets/Audio/M4A1_reload");
+        
     }
 
     // Update is called once per frame.
@@ -81,6 +89,9 @@ public class FirstPersonGunController : MonoBehaviour {
                     currentTimeToReload = timeToReload;
                     state = GunState.Reloading;
                 }
+
+                GetComponent<Animator>().SetBool("reload", true);
+                gunAudioSource.PlayOneShot(reloadClip);
                 
             }
 
@@ -110,6 +121,7 @@ public class FirstPersonGunController : MonoBehaviour {
 
             currentTimeToReload = timeToReload;
             state = GunState.Idle; // Exit the reloading state.
+            GetComponent<Animator>().SetBool("reload", false);
 
         }
 
@@ -146,6 +158,8 @@ public class FirstPersonGunController : MonoBehaviour {
                 smokeSystem.Emit(10);
 
                 shellSystem.Emit(1); // Emit an empty shell from the gun's ejection port.
+
+                gunAudioSource.PlayOneShot(shotClip);
 
                 bulletController.ShootRaycastBullet(10.0f); // Use a raycast bullet class to shoot the real bullet that interacts with the world.
 
