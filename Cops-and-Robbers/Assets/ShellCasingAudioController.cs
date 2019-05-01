@@ -32,7 +32,6 @@ public class ShellCasingAudioController : MonoBehaviour{
 
         foreach (ParticleCollisionEvent e in collisionEvents) {
 
-            Debug.Log("Shell casing hit something.");
             int clipIndex = Random.Range(0, 4);
             AudioSource.PlayClipAtPoint(shellBounceClips[0], e.intersection, 0.5f);
 

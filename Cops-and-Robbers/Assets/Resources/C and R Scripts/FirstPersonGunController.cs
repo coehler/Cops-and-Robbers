@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class FirstPersonGunController : MonoBehaviour {
 
+    public int currentGunIndex = 0;
+
     public GameObject firstPersonCamera;
-    private FirstPersonMouseLookController mouseController;
     public KeyCode shootKeyCode = KeyCode.Mouse0;
     public KeyCode aimKeyCode = KeyCode.Mouse1;
     public KeyCode reloadKeyCode = KeyCode.R;
+    public KeyCode switchKeyCode = KeyCode.Q;
     public float recoilAmount = 0.03f;
     public float recoilRecoverTime = 0.2f;
     public float holdHeight = -0.3f;
     public float holdSide = 0.4f;
     public float fireSpeed = 15.0f;
     public float racioHipHold = 1.0f;
-    public float racioHipHoldV;
     public float hipRotateSpeed = 0.05f;
     public float aimRotateSpeed = 0.01f;
-    public float currentRotateSpeed;
     public ParticleSystem smokeSystem;
     public ParticleSystem flashSystem;
     public ParticleSystem shellSystem;
@@ -29,20 +29,26 @@ public class FirstPersonGunController : MonoBehaviour {
     public float hipToAimSpeed = 0.1f;
     public float hipZoom = 60.0f;
     public float aimZoom = 40.0f;
-    public float currentZoom;
-    public enum GunState { Shooting, Idle, Reloading, MagazineEmpty};
+    public string displayName;
 
     [HideInInspector]
+    public float currentRotateSpeed;
+    [HideInInspector]
+    public float currentZoom;
+    [HideInInspector]
+    public enum GunState { Shooting, Idle, Reloading, MagazineEmpty };
+    //[HideInInspector]
     public GunState state;
     [HideInInspector]
     public float currentTimeToReload = 0.0f;
     [HideInInspector]
     public bool aiming = false;
 
+    private FirstPersonMouseLookController mouseController;
     private AudioSource gunAudioSource;
-    private AudioClip shotClip;
-    private AudioClip reloadClip;
-    private float waitUntilNextFire = 0.0f;
+    public AudioClip shotClip;
+    public AudioClip reloadClip;
+    public float waitUntilNextFire = 1.0f;
     private float currentRecoilZPos = 0.0f;
     private float currentRecoilZPosV = 0.0f;
     private float targetXRotation = 0.0f;
@@ -53,7 +59,8 @@ public class FirstPersonGunController : MonoBehaviour {
     private float gunbobAmountY = 0.01f;
     private float currentGunbobX = 0.0f;
     private float currentGunbobY = 0.0f;
-    
+    private float racioHipHoldV;
+
     private readonly float shootAngleRandomizationNotAiming = 5.0f;
     private readonly float shootAngleRandomizationAiming = 15.0f;
     private RaycastBulletController bulletController;
@@ -63,10 +70,9 @@ public class FirstPersonGunController : MonoBehaviour {
 
         mouseController = GetComponentInParent(typeof(FirstPersonMouseLookController)) as FirstPersonMouseLookController; // Get the mouse controller script.
         bulletController = transform.parent.GetComponentInChildren<RaycastBulletController>();
-        gunAudioSource = GetComponent<AudioSource>();
-        shotClip = Resources.Load<AudioClip>("C and R Original Assets/Audio/M4A1_shot");
-        reloadClip = Resources.Load<AudioClip>("C and R Original Assets/Audio/M4A1_reload");
-        
+
+        SwitchGun(1);
+
     }
 
     // Update is called once per frame.
@@ -74,6 +80,18 @@ public class FirstPersonGunController : MonoBehaviour {
 
         currentGunbobX = Mathf.Sin(mouseController.headbobStepCounter) * gunbobAmountX * racioHipHold;
         currentGunbobY = Mathf.Cos(mouseController.headbobStepCounter * 2) * gunbobAmountY * -1 * racioHipHold;
+
+        if (Input.GetKeyDown(switchKeyCode)) {
+
+            currentGunIndex ++;
+
+            if (currentGunIndex > transform.childCount - 1) {
+                currentGunIndex = 0;
+            }
+
+            SwitchGun(currentGunIndex);
+
+        }
 
         if (ammoInMagazine == 0 && state != GunState.Reloading) { // If there is no ammunition in the magazine and the player is not reloading, set the gun's state to MagazineEmpty.
 
@@ -90,9 +108,8 @@ public class FirstPersonGunController : MonoBehaviour {
                     state = GunState.Reloading;
                 }
 
-                GetComponent<Animator>().SetBool("reload", true);
                 gunAudioSource.PlayOneShot(reloadClip);
-                
+
             }
 
         }
@@ -108,7 +125,7 @@ public class FirstPersonGunController : MonoBehaviour {
             int ammoToLoad = maxAmmoInMagazine - ammoInMagazine;
 
             if (ammoInReserve >= ammoToLoad) { // If there is enough reserve ammunition to completely fill a new magazine, do so.
- 
+
                 ammoInMagazine = maxAmmoInMagazine;
                 ammoInReserve -= ammoToLoad;
 
@@ -121,7 +138,6 @@ public class FirstPersonGunController : MonoBehaviour {
 
             currentTimeToReload = timeToReload;
             state = GunState.Idle; // Exit the reloading state.
-            GetComponent<Animator>().SetBool("reload", false);
 
         }
 
@@ -140,7 +156,7 @@ public class FirstPersonGunController : MonoBehaviour {
             aiming = false;
 
         }
-        
+
         if (Input.GetKey(shootKeyCode)) { // If the shoot key is being pressed, begin to check if the gun can shoot. 
 
             if (waitUntilNextFire <= 0.0f && (state != GunState.MagazineEmpty && state != GunState.Reloading)) { // If the gun has a bullet chambered, is not empty, and is not reloading.
@@ -189,5 +205,75 @@ public class FirstPersonGunController : MonoBehaviour {
 
         transform.rotation = Quaternion.Euler(targetXRotation, targetYRotation, 0);
 
+    }
+
+    /* 
+    * Load the data contained in a GunData object into local variables.
+    * 
+    * @param data the GunData class that describes some gun.
+    * @author Christopher Oehler
+    */
+    private void LoadGunData(GunData data) {
+
+        // Load data regarding how the visual gun model appears.
+        recoilAmount = data.recoilAmount;
+        recoilRecoverTime = data.recoilRecoverTime;
+        holdHeight = data.holdHeight;
+        holdSide = data.holdSide;
+        fireSpeed = data.fireSpeed;
+        racioHipHold = data.racioHipHold;
+        hipRotateSpeed = data.hipRotateSpeed;
+        aimRotateSpeed = data.aimRotateSpeed;
+        ammoInMagazine = data.ammoInMagazine;
+        maxAmmoInMagazine = data.maxAmmoInMagazine;
+        ammoInReserve = data.ammoInReserve;
+        timeToReload = data.timeToReload;
+        hipToAimSpeed = data.hipToAimSpeed;
+        hipZoom = data.hipZoom;
+        aimZoom = data.aimZoom;
+
+        // Load data regarding raycast bullets into raycast bullet controller.
+        bulletController.spreadCurrent = data.spreadCurrent;
+        bulletController.spreadMin = data.spreadMin;
+        bulletController.spreadMax = data.spreadMax;
+        bulletController.spreadPerShot = data.spreadPerShot;
+        bulletController.spreadRecovery = data.spreadRecovery;
+        bulletController.hipSpreadMin = data.hipSpreadMin;
+        bulletController.hipSpreadMax = data.hipSpreadMax;
+        bulletController.hipSpreadPerShot = data.hipSpreadPerShot;
+        bulletController.hipSpreadRecovery = data.hipSpreadRecovery;
+        bulletController.aimSpreadMin = data.aimSpreadMin;
+        bulletController.aimSpreadMax = data.aimSpreadMax;
+        bulletController.aimSpreadPerShot = data.aimSpreadPerShot;
+        bulletController.aimSpreadRecovery = data.aimSpreadRecovery;
+
+        // Load data regarding weapon FX.
+        smokeSystem = data.smokeSystem;
+        flashSystem = data.flashSystem;
+        shellSystem = data.shellSystem;
+        gunAudioSource = data.gunAudioSource;
+        shotClip = Resources.Load<AudioClip>("C and R Original Assets/Audio/" + data.shotClip);
+        reloadClip = Resources.Load<AudioClip>("C and R Original Assets/Audio/" + data.reloadClip);
+        displayName = data.displayName;
+
+    }
+
+    /* 
+    * Switch the gun that the player is using.
+    * 
+    * @param index the index of the gun model and data, which is a child under this GameObject.
+    * @author Christopher Oehler
+    */
+    private void SwitchGun(int index) {
+        
+        GameObject gun = transform.GetChild(index).gameObject;
+        GunData data = gun.GetComponentInChildren<GunData>();
+        LoadGunData(data);
+        
+        foreach (Transform child in transform) {
+            child.gameObject.SetActive(false);
+        }
+
+        gun.SetActive(true);
     }
 }

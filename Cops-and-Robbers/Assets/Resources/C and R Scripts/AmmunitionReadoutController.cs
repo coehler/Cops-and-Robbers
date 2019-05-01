@@ -8,6 +8,7 @@ public class AmmunitionReadoutController : MonoBehaviour{
     public GameObject player;
     private Text currentAmmoReadout;
     private Text reserveAmmoReadout;
+    private Text currentGunDisplayName;
     private FirstPersonGunController firstPersonGunController;
 
     // Start is called before the first frame update.
@@ -15,6 +16,7 @@ public class AmmunitionReadoutController : MonoBehaviour{
 
         currentAmmoReadout = GameObject.Find("Current Ammo").GetComponent<Text>();
         reserveAmmoReadout = GameObject.Find("Reserve Ammo").GetComponent<Text>();
+        currentGunDisplayName = GameObject.Find("Reserve Ammo").GetComponent<Text>();
         firstPersonGunController = player.GetComponentInChildren<FirstPersonGunController>();
 
     }

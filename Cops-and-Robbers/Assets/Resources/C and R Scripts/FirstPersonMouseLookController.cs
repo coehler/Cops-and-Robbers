@@ -20,7 +20,7 @@ public class FirstPersonMouseLookController : MonoBehaviour
     public float flinchRecoverTime = 0.2f;
     public float sensitivity = 5.0f;
     public float smoothing = 2.0f;
-    public FirstPersonGunController gunController;
+    private FirstPersonGunController gunController;
 
     [HideInInspector]
     public float headbobStepCounter = 0.0f;
@@ -30,6 +30,7 @@ public class FirstPersonMouseLookController : MonoBehaviour
     // Initialize Controller.
     void Start(){
 
+        gunController = GetComponentInChildren<FirstPersonGunController>();
         character = transform.parent.gameObject;
         parentLastPos = transform.parent.position;
         playerCamera = GetComponent<Camera>();
