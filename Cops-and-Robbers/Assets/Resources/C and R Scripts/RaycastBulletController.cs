@@ -3,36 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class RaycastBulletController : MonoBehaviour{
+    
+    [HideInInspector] public float spreadCurrent = 0.0f;
+    [HideInInspector] public float spreadMin = 0.3f;
+    [HideInInspector] public float spreadMax = 1.3f;
+    [HideInInspector] public float spreadPerShot = 0.1f;
+    [HideInInspector] public float spreadRecovery = 0.5f;
+    [HideInInspector] public float hipSpreadMin = 0.3f;
+    [HideInInspector] public float hipSpreadMax = 1.3f;
+    [HideInInspector] public float hipSpreadPerShot = 0.1f;
+    [HideInInspector] public float hipSpreadRecovery = 1.5f;
+    [HideInInspector] public float aimSpreadMin = 0.05f;
+    [HideInInspector] public float aimSpreadMax = 0.3f;
+    [HideInInspector] public float aimSpreadPerShot = 0.01f;
+    [HideInInspector] public float aimSpreadRecovery = 1.5f;
+    [HideInInspector] public FirstPersonGunController gunController;
 
-    [HideInInspector]
-    public FirstPersonGunController gunController;
     private RaycastHit hit;
     private int playerLayer;
-
-    public float spreadCurrent = 0.0f;
-
-    public float spreadMin = 0.3f;
-    public float spreadMax = 1.3f;
-    public float spreadPerShot = 0.1f;
-    public float spreadRecovery = 0.5f;
-
-    public float hipSpreadMin = 0.3f;
-    public float hipSpreadMax = 1.3f;
-    public float hipSpreadPerShot = 0.1f;
-    public float hipSpreadRecovery = 1.5f;
-    public float aimSpreadMin = 0.05f;
-    public float aimSpreadMax = 0.3f;
-    public float aimSpreadPerShot = 0.01f;
-    public float aimSpreadRecovery = 1.5f;
-
     private readonly float z = 10.0f;
 
     // Start is called before the first frame update.
     void Start(){
+
         gunController = transform.parent.GetComponentInChildren<FirstPersonGunController>();
         playerLayer = 1 << 10;
         playerLayer = ~playerLayer;
         spreadCurrent = spreadMin;
+
     }
 
     void Update() {

@@ -5,50 +5,47 @@ using UnityEngine;
 public class FirstPersonGunController : MonoBehaviour {
 
     public int currentGunIndex = 0;
-
     public GameObject firstPersonCamera;
     public KeyCode shootKeyCode = KeyCode.Mouse0;
     public KeyCode aimKeyCode = KeyCode.Mouse1;
     public KeyCode reloadKeyCode = KeyCode.R;
     public KeyCode switchKeyCode = KeyCode.Q;
-    public float recoilAmount = 0.03f;
-    public float recoilRecoverTime = 0.2f;
-    public float holdHeight = -0.3f;
-    public float holdSide = 0.4f;
-    public float fireSpeed = 15.0f;
-    public float racioHipHold = 1.0f;
-    public float hipRotateSpeed = 0.05f;
-    public float aimRotateSpeed = 0.01f;
-    public ParticleSystem smokeSystem;
-    public ParticleSystem flashSystem;
-    public ParticleSystem shellSystem;
-    public int ammoInMagazine = 30;
-    public int maxAmmoInMagazine = 30;
-    public int ammoInReserve = 60;
-    public float timeToReload = 1.0f;
-    public float hipToAimSpeed = 0.1f;
-    public float hipZoom = 60.0f;
-    public float aimZoom = 40.0f;
-    public string displayName;
 
-    [HideInInspector]
-    public float currentRotateSpeed;
-    [HideInInspector]
-    public float currentZoom;
-    [HideInInspector]
-    public enum GunState { Shooting, Idle, Reloading, MagazineEmpty };
+    [HideInInspector] public float recoilAmount = 0.03f;
+    [HideInInspector] public float recoilRecoverTime = 0.2f;
+    [HideInInspector] public float holdHeight = -0.3f;
+    [HideInInspector] public float holdSide = 0.4f;
+    [HideInInspector] public float fireSpeed = 15.0f;
+    [HideInInspector] public float racioHipHold = 1.0f;
+    [HideInInspector] public float hipRotateSpeed = 0.05f;
+    [HideInInspector] public float aimRotateSpeed = 0.01f;
+    [HideInInspector] public ParticleSystem smokeSystem;
+    [HideInInspector] public ParticleSystem flashSystem;
+    [HideInInspector] public ParticleSystem shellSystem;
+    [HideInInspector] public int ammoInMagazine = 30;
+    [HideInInspector] public int maxAmmoInMagazine = 30;
+    [HideInInspector] public int ammoInReserve = 60;
+    [HideInInspector] public float timeToReload = 1.0f;
+    [HideInInspector] public float hipToAimSpeed = 0.1f;
+    [HideInInspector] public float hipZoom = 60.0f;
+    [HideInInspector] public float aimZoom = 40.0f;
+    [HideInInspector] public string displayName;
+    [HideInInspector] public float currentRotateSpeed;
+    [HideInInspector] public float currentZoom;
+    [HideInInspector] public enum GunState { Shooting, Idle, Reloading, MagazineEmpty, Switching };
     //[HideInInspector]
     public GunState state;
-    [HideInInspector]
-    public float currentTimeToReload = 0.0f;
-    [HideInInspector]
-    public bool aiming = false;
+    [HideInInspector] public float currentTimeToReload = 0.0f;
+    [HideInInspector] public bool aiming = false;
+    [HideInInspector] public AudioClip shotClip;
+    [HideInInspector] public AudioClip reloadClip;
+
+    public float switchTime = 1.0f;
+    public float currentSwitchTime = 0.0f;
 
     private FirstPersonMouseLookController mouseController;
     private AudioSource gunAudioSource;
-    public AudioClip shotClip;
-    public AudioClip reloadClip;
-    public float waitUntilNextFire = 1.0f;
+    private float waitUntilNextFire = 1.0f;
     private float currentRecoilZPos = 0.0f;
     private float currentRecoilZPosV = 0.0f;
     private float targetXRotation = 0.0f;
@@ -60,7 +57,6 @@ public class FirstPersonGunController : MonoBehaviour {
     private float currentGunbobX = 0.0f;
     private float currentGunbobY = 0.0f;
     private float racioHipHoldV;
-
     private readonly float shootAngleRandomizationNotAiming = 5.0f;
     private readonly float shootAngleRandomizationAiming = 15.0f;
     private RaycastBulletController bulletController;
@@ -71,7 +67,7 @@ public class FirstPersonGunController : MonoBehaviour {
         mouseController = GetComponentInParent(typeof(FirstPersonMouseLookController)) as FirstPersonMouseLookController; // Get the mouse controller script.
         bulletController = transform.parent.GetComponentInChildren<RaycastBulletController>();
 
-        SwitchGun(1);
+        SwitchGun(currentGunIndex);
 
     }
 
@@ -83,17 +79,36 @@ public class FirstPersonGunController : MonoBehaviour {
 
         if (Input.GetKeyDown(switchKeyCode)) {
 
-            currentGunIndex ++;
+            if (state != GunState.Switching) {
 
-            if (currentGunIndex > transform.childCount - 1) {
-                currentGunIndex = 0;
+                currentGunIndex++;
+
+                if (currentGunIndex > transform.childCount - 1) {
+                    currentGunIndex = 0;
+                }
+
+                state = GunState.Switching;
+                currentSwitchTime = switchTime;
+
             }
-
-            SwitchGun(currentGunIndex);
 
         }
 
-        if (ammoInMagazine == 0 && state != GunState.Reloading) { // If there is no ammunition in the magazine and the player is not reloading, set the gun's state to MagazineEmpty.
+        if (state == GunState.Switching) {
+
+            currentSwitchTime -= Time.deltaTime;
+            targetXRotation += 800 * Time.deltaTime;
+
+        }
+
+        if (state == GunState.Switching && currentSwitchTime <= 0.0f) {
+
+            SwitchGun(currentGunIndex);
+            state = GunState.Idle;
+
+        }
+
+        if (ammoInMagazine == 0 && state != GunState.Reloading && state != GunState.Switching) { // If there is no ammunition in the magazine and the player is not reloading or switching, set the gun's state to MagazineEmpty.
 
             state = GunState.MagazineEmpty;
 
@@ -141,7 +156,7 @@ public class FirstPersonGunController : MonoBehaviour {
 
         }
 
-        if (Input.GetKey(aimKeyCode)) { // If the aim down sights key has been pressed, set the appropriate values.
+        if (Input.GetKey(aimKeyCode) && state != GunState.Switching) { // If the aim down sights key has been pressed, set the appropriate values.
 
             racioHipHold = Mathf.SmoothDamp(racioHipHold, 0, ref racioHipHoldV, hipToAimSpeed);
             currentRotateSpeed = aimRotateSpeed;
@@ -159,7 +174,7 @@ public class FirstPersonGunController : MonoBehaviour {
 
         if (Input.GetKey(shootKeyCode)) { // If the shoot key is being pressed, begin to check if the gun can shoot. 
 
-            if (waitUntilNextFire <= 0.0f && (state != GunState.MagazineEmpty && state != GunState.Reloading)) { // If the gun has a bullet chambered, is not empty, and is not reloading.
+            if (waitUntilNextFire <= 0.0f && (state != GunState.MagazineEmpty && state != GunState.Reloading && state != GunState.Switching)) { // If the gun has a bullet chambered, is not empty, and is not reloading.
 
                 state = GunState.Shooting; // Change gun's state to shooting.
 
@@ -187,7 +202,7 @@ public class FirstPersonGunController : MonoBehaviour {
 
         } else { // The player has not pulled the trigger.
 
-            if (state != GunState.Reloading && state != GunState.MagazineEmpty) { // If the gun is not empty or reloading, the gun must be idle.
+            if (state != GunState.Reloading && state != GunState.MagazineEmpty && state != GunState.Switching) { // If the gun is not empty or reloading, the gun must be idle.
                 state = GunState.Idle;
             }
 

@@ -9,7 +9,7 @@ public class CrosshairController : MonoBehaviour{
 
     private RaycastBulletController bulletController;
     private RectTransform top, bottom, left, right;
-    private Image reload;
+    private Image interaction;
 
     private readonly float maxLocation = 100.0f;
     private readonly float minLocation = 10.0f;
@@ -22,11 +22,11 @@ public class CrosshairController : MonoBehaviour{
         right = this.gameObject.transform.GetChild(1).GetComponent<RectTransform>();
         bottom = this.gameObject.transform.GetChild(2).GetComponent<RectTransform>();
         left = this.gameObject.transform.GetChild(3).GetComponent<RectTransform>();
-        reload = this.gameObject.transform.GetChild(4).GetComponent<Image>();
+        interaction = this.gameObject.transform.GetChild(4).GetComponent<Image>();
 
         bulletController = player.GetComponentInChildren<RaycastBulletController>(); // Get the raycast bullet controller so we can get spread values.
 
-        reload.fillClockwise = false;
+        interaction.fillClockwise = false;
 
     }
 
@@ -42,25 +42,44 @@ public class CrosshairController : MonoBehaviour{
 
             ToggleCrosshair(false);
 
+            if (bulletController.gunController.state == FirstPersonGunController.GunState.Reloading) {
+
+                interaction.fillAmount = bulletController.gunController.currentTimeToReload / bulletController.gunController.timeToReload;
+
+            } else if (bulletController.gunController.state == FirstPersonGunController.GunState.Switching) {
+
+                interaction.fillAmount = bulletController.gunController.currentSwitchTime / bulletController.gunController.switchTime;
+
+            } else {
+
+                interaction.fillAmount = 0.0f;
+
+            }
+
         } else {
 
             ToggleCrosshair(true);
 
+            if (bulletController.gunController.state == FirstPersonGunController.GunState.Reloading) {
+
+                ToggleCrosshair(false);
+
+                interaction.fillAmount = bulletController.gunController.currentTimeToReload / bulletController.gunController.timeToReload;
+
+            } else if (bulletController.gunController.state == FirstPersonGunController.GunState.Switching) {
+
+                ToggleCrosshair(false);
+
+                interaction.fillAmount = bulletController.gunController.currentSwitchTime / bulletController.gunController.switchTime;
+
+            } else {
+
+                interaction.fillAmount = 0.0f;
+
+            }
+
         }
 
-        if (bulletController.gunController.state == FirstPersonGunController.GunState.Reloading) {
-
-            ToggleCrosshair(false);
-
-            reload.fillAmount = bulletController.gunController.currentTimeToReload / bulletController.gunController.timeToReload;
-
-        } else {
-
-            ToggleCrosshair(true);
-
-            reload.fillAmount = 0.0f;
-
-        }
     }
 
     /*

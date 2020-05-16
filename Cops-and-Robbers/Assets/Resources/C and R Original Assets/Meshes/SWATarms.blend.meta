@@ -1,0 +1,146 @@
+fileFormatVersion: 2
+guid: 5b6917dac4655dd47a013110f0f35766
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: ArmIK_R
+    100002: Character_Male_SWAT_01_Arms
+    100004: Elbow_L
+    100006: Elbow_R
+    100008: FIng_1_L
+    100010: FIng_1_R
+    100012: FIng_2_L
+    100014: FIng_2_R
+    100016: Hand_1_L
+    100018: Hand_1_R
+    100020: Hand_1_R_001
+    100022: Hand_2_L
+    100024: LowerArm_L
+    100026: LowerArm_L_001
+    100028: LowerArm_L_002
+    100030: LowerArm_R
+    100032: LowerArm_R_001
+    100034: SWAT_Arms
+    100036: //RootNode
+    100038: Thumb_1_L
+    100040: Thumb_1_R
+    100042: Thumb_2_L
+    100044: Thumb_2_R
+    100046: UpperArm_L
+    100048: UpperArm_R
+    400000: ArmIK_R
+    400002: Character_Male_SWAT_01_Arms
+    400004: Elbow_L
+    400006: Elbow_R
+    400008: FIng_1_L
+    400010: FIng_1_R
+    400012: FIng_2_L
+    400014: FIng_2_R
+    400016: Hand_1_L
+    400018: Hand_1_R
+    400020: Hand_1_R_001
+    400022: Hand_2_L
+    400024: LowerArm_L
+    400026: LowerArm_L_001
+    400028: LowerArm_L_002
+    400030: LowerArm_R
+    400032: LowerArm_R_001
+    400034: SWAT_Arms
+    400036: //RootNode
+    400038: Thumb_1_L
+    400040: Thumb_1_R
+    400042: Thumb_2_L
+    400044: Thumb_2_R
+    400046: UpperArm_L
+    400048: UpperArm_R
+    2100000: lambert24_001
+    4300000: Character_Male_SWAT_01_Arms
+    7400000: Default Take
+    9500000: //RootNode
+    13700000: Character_Male_SWAT_01_Arms
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
