@@ -1,6 +1,6 @@
 # Cops and Robbers
 
-A cops and robbers shootout game developed C# for Unity 2018.
+A cops and robbers shootout game developed in C# for Unity 2018.
 
 ## Description
 
